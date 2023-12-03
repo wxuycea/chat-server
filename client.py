@@ -19,13 +19,13 @@ def receive_messages(client_socket):
 def main():
     # step0. connection
     server_ip = "127.0.0.1"  # 서버의 IP 주소
-    server_port = 9113  # 서버의 포트 번호
+    server_port = 8732  # 서버의 포트 번호
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # IPv4, TCP
     client_socket.connect((server_ip, server_port))
 
     # step1. get username
-    # name = input("\n이름을 입력하세요: ")
-    # client_socket.send(name.encode())
+    name = input("\n이름을 입력하세요: ")
+    client_socket.send(name.encode())
 
     # set thread method
     message_receive_thread = threading.Thread(target=receive_messages, args=(client_socket,))
@@ -36,13 +36,11 @@ def main():
             # get message text
             message = input()
 
-            # # 종료 옵션
-            # if message == "exit":
-            #     client_socket.send(message.encode())
-            #     break
+            # 종료 옵션
+            if message == "exit":
+                client_socket.send(message.encode())
+                break
 
-            # send message
-            print(message)
             client_socket.send(message.encode())
     except KeyboardInterrupt:   #-- 검토
         pass  # Ctrl+C로 인한 종료
