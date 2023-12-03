@@ -1,4 +1,3 @@
-# 안녕현수!!
 # Server.py
 import socket
 import threading
@@ -12,11 +11,13 @@ welcome_message = """
 ┃  채팅 프로그램에 접속하였습니다  ┃
 ┗━━━━━━━━━━━━━━━━━┛
 """
+clients = []
+names = []
 
 # 이름 유효성 검사를 위한 정규표현식
 name_pattern = re.compile(r'^[가-힣][가-힣\s]{0,9}$')
 
-def handle_client(client_socket, clients, names, welcome_message, addr):
+def handle_client(client_socket, addr):
     while True:   #-- 올바른 이름 입력까지 반복
         client_name = client_socket.recv(1024).decode()
         # 중복된 이름과 규칙 어긴 이름 필터링
@@ -80,16 +81,13 @@ def main():
     server_socket.listen(5)
     print("채팅 서버가 열렸습니다.\n")
 
-    clients = []
-    names = []
-
     while True:
         client_socket, addr = server_socket.accept()
 
         clients.append(client_socket)
 
         # 각 클라이언트를 위한 스레드 시작
-        client_handler = threading.Thread(target=handle_client, args=(client_socket, clients, names, welcome_message, addr))
+        client_handler = threading.Thread(target=handle_client, args=(client_socket, addr))
         client_handler.start()
 
 if __name__ == "__main__":
